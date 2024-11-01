@@ -7,7 +7,7 @@ export class QrcodeController {
     constructor(private readonly qrcodeService: QrcodeService) {}
 
     @Get()
-    @UseGuards(AuthGuard('api-key'))
+    // @UseGuards(AuthGuard('api-key'))
     async getQrCode(@Query('data') data: string) {
         return await this.qrcodeService.generateQrCode(data)
     }
