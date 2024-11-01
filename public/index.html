@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+    <meta charset="utf-8" />
+    <link href="main.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+        <!-- <div class="item">
+            <div class="label">Original link: </div>
+            <input type="text" v-model="originalLink">
+        </div>
+        <div class="item">
+            <div class="label">Short link: </div>
+            <div class="text">{{this.shortLink}}</div>
+        </div>
+        <div class="item">
+            <div id="qr-code-wrapper"></div>
+        </div>
+        <div class="item">
+            <button @click="generateShortLink()">Generate short link</button>
+            <button @click="generateQR(shortLink)">Generate QRCode</button>
+        </div> -->
+    </div>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    message: "Hello Vue!"
+                    // originalLink: "https://s3.timeweb.com/27b160af-cd6cd473-8dff-4865-b8e0-08cff79a4466/windows-11-dark-mode-blue-stock-official-3840x2400-5630.jpg",
+                    // shortLink: ""
+                }
+            },
+            // methods: {
+            //     generateShortLink() {
+            //         const request = axios.get(`http://localhost:3000/shortLink?url=${this.originalLink}`)
+            //         request.then((response) => {
+            //             let short_url = response.data.response.short_url;
+            //             this.shortLink = short_url
+            //         })
+            //     },
+            //     generateQR(link) {
+            //         const request = axios.get(`http://localhost:3000/qr-code?link=${link}`)
+            //         request.then((response) => {
+            //             document.getElementById("qr-code-wrapper").innerHTML = response.data
+            //         })
+            //     }
+            // }
+        }).mount('#app');
+    </script>
+
+</body>
+</html>

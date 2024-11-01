@@ -1,0 +1,20 @@
+{
+  "name": "storage",
+  "version": "1.0.0",
+  "description": "Custom api for s3 and other types of filestorages",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "16.3.1",
+    "log4js": "^6.9.1",
+    "express": "^4.21.1",
+    "s3-client": "^4.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

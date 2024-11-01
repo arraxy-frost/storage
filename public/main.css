@@ -1,0 +1,34 @@
+#app {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    padding: 12px;
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+}
+
+.item > .label {
+    width: 112px;
+}
+
+.item > button {
+    width: 100%;
+}
+
+.item > button:hover {
+    cursor: pointer;
+}
+
+.item > input {
+    width: 100%;
+}
+
+.item > .text {
+    width: 100%;
+}
