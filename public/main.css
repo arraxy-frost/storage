@@ -6,29 +6,7 @@
     padding: 12px;
 }
 
-.item {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    width: 100%;
-}
-
-.item > .label {
-    width: 112px;
-}
-
-.item > button {
-    width: 100%;
-}
-
-.item > button:hover {
-    cursor: pointer;
-}
-
-.item > input {
-    width: 100%;
-}
-
-.item > .text {
-    width: 100%;
+img {
+    width: 100px;
+    height: 100px;
 }
