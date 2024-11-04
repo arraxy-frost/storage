@@ -21,10 +21,7 @@ export class ImageController {
     async postImage(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         let fileName = await this.imageService.uploadObject(file);
 
-        return {
-            photo: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${fileName}`,
-            qrCode: `${req.protocol}://${req.get('Host')}${req.originalUrl}/qr/${fileName}`
-        }
+        return `${req.protocol}://${req.get('Host')}${req.originalUrl}/qr/${fileName}`
     }
 
     @Get("qr/:fileName")
