@@ -1,30 +1,13 @@
+import { PutObjectCommand, PutObjectCommandInput, PutObjectCommandOutput } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { InjectS3, S3 } from 'nestjs-s3';
+import { v4 as uuidv4 } from 'uuid';
 import * as qrcode from 'qrcode';
-// import * as S3 from 's3-client'
 
 
 @Injectable()
 export class ImageService {
-    // private s3Client: any;
-    constructor(@InjectS3() private readonly s3: S3,) {
-        // this.s3Client = S3.createClient({
-        //     maxAsyncS3: 20,     // this is the default
-        //     s3RetryCount: 3,    // this is the default
-        //     s3RetryDelay: 1000, // this is the default
-        //     multipartUploadThreshold: 20971520, // this is the default (20 MB)
-        //     multipartUploadSize: 15728640, // this is the default (15 MB)
-        //     s3Options: {
-        //         accessKeyId: process.env.S3_ACCESS_KEY_ID,
-        //         secretAccessKey: process.env.S3_SECRET,
-        //         region: process.env.S3_REGION,
-        //         endpoint: process.env.S3_ENDPOINT,
-        //         sslEnabled: true
-        //       // any other options are passed to new AWS.S3()
-        //       // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
-        //     },
-        // })
-    }
+    constructor(@InjectS3() private readonly s3: S3,) {}
 
     async generateQrCode(data: string): Promise<string> {
         try {
@@ -38,33 +21,29 @@ export class ImageService {
         return this.s3.listObjects({ Bucket: process.env.S3_BUCKET })
     }
 
-    // async getListObjects() {
-    //     this.s3Client.listObjects({
-    //         recursive: false,
-    //         s3Params: {
-    //             Bucket: process.env.S3_BUCKET
-    //         }
-    //     }, (err, data) => {
-    //         console.log(data)
-    //     }).on('data', (data) => { 
-    //         console.log(data)
-    //     })
+    async uploadObject(file: Express.Multer.File): Promise<string> {
+        let key = uuidv4()
 
-    //     return new Promise((resolve, reject) => {
-    //         this.s3Client.listObjects({
-    //             recursive: false,
-    //             s3Params: {
-    //                 Bucket: process.env.S3_BUCKET
-    //             }
-    //         }, (err, data) => {
-    //             if (err) {
-    //                 console.log(err)
-    //                 reject(err)
-    //             } else {
-    //                 console.log(err)
-    //                 resolve(data)
-    //             }
-    //         })
-    //     })
-    // }
+        const input: PutObjectCommandInput = {
+            Body: file.buffer,
+            Bucket: process.env.S3_BUCKET,
+            Key: key,
+            ContentType: file.mimetype,
+            ACL: 'public-read'
+        }
+
+        try {
+            const response: PutObjectCommandOutput = 
+                await this.s3.send(new PutObjectCommand(input))
+
+            if (response.$metadata.httpStatusCode === 200) {
+                // return `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${key}`
+                return key
+            }
+            throw new Error('Image not saved in s3!')
+        }
+        catch (err) {
+            throw err
+        }
+    }
 }
