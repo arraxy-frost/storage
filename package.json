@@ -1,8 +1,8 @@
 {
     "name": "storage",
-    "version": "0.0.1",
-    "description": "",
-    "author": "Arraxy",
+    "version": "1.0.0",
+    "description": "s3 middleware and qr-code gen api",
+    "author": "arraxy-frost",
     "private": true,
     "scripts": {
         "build": "nest build",
