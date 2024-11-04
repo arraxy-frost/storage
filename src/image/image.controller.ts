@@ -8,12 +8,12 @@ import { AuthGuard } from '@nestjs/passport';
 export class ImageController {
     constructor(private readonly imageService: ImageService) {}
 
-    @Get()
-    @UseGuards(AuthGuard('api-key'))
-    async getImage() {
-        let result = await this.imageService.getListObjects()
-        return result.Contents
-    }
+    // @Get()
+    // @UseGuards(AuthGuard('api-key'))
+    // async getImage() {
+    //     let result = await this.imageService.getListObjects()
+    //     return result.Contents
+    // }
 
     @Post()
     @UseInterceptors(FileInterceptor('file'))
