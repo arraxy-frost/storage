@@ -11,9 +11,6 @@ import { ImageModule } from './image/image.module'
 @Module({
     imports: [
       ConfigModule.forRoot(),
-      ServeStaticModule.forRoot({
-        rootPath: join(__dirname, '..', 'public')
-      }),
       AuthModule,
       ImageModule,
       S3Module.forRoot({
