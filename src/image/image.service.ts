@@ -1,8 +1,9 @@
 import { PutObjectCommand, PutObjectCommandInput, PutObjectCommandOutput } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { InjectS3, S3 } from 'nestjs-s3';
-import { v4 as uuidv4 } from 'uuid';
 import * as qrcode from 'qrcode';
+
+const generateUniqueId = require('generate-unique-id');
 
 
 @Injectable()
@@ -22,7 +23,9 @@ export class ImageService {
     }
 
     async uploadObject(file: Express.Multer.File): Promise<string> {
-        let key = uuidv4()
+        let key = generateUniqueId({
+            length: 8
+        })
 
         const input: PutObjectCommandInput = {
             Body: file.buffer,
