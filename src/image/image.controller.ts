@@ -11,17 +11,23 @@ export class ImageController {
     ) {}
 
 
-    @Get(":fileName")
-    async loadPhoto(@Res() res: Response, @Ip() ip, @Param('fileName') fileName: string) {
-        res.redirect(`${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${fileName}`)
-    }
+    // @Get(":fileName")
+    // async loadPhoto(@Res() res: Response, @Ip() ip, @Param('fileName') fileName: string) {
+    //     res.redirect(`${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${fileName}`)
+    // }
 
-    @Post()
+    @Post(":fileName?")
     @UseInterceptors(FileInterceptor('file'))
     @UseGuards(AuthGuard('api-key'))
-    async postImage(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
-        let fileName = await this.imageService.uploadObject(file);
-        return `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${fileName}`
+    async postImage(@Param('fileName') fileName: string | null, @UploadedFile() file: Express.Multer.File) {
+        let response = await this.imageService.uploadObject(file, fileName);
+        
+        if (process.env.S3_ENDPOINT == 's3.timeweb.cloud') {
+            return `https://${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${response}`
+        }
+        else {
+            return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.${process.env.S3_ENDPOINT}/${response}`
+        }
     }
 
     // @Get("qr/:fileName")

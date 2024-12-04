@@ -17,7 +17,7 @@ import { ImageModule } from './image/image.module'
             accessKeyId: process.env.S3_ACCESS_KEY_ID,
             secretAccessKey: process.env.S3_SECRET
           },
-          endpoint: process.env.S3_ENDPOINT,
+        //   endpoint: process.env.S3_ENDPOINT,
           region: process.env.S3_REGION,
           forcePathStyle: true,
         }

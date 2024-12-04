@@ -22,17 +22,15 @@ export class ImageService {
         return this.s3.listObjects({ Bucket: process.env.S3_BUCKET })
     }
 
-    async uploadObject(file: Express.Multer.File): Promise<string> {
-        let key = generateUniqueId({
-            length: 8
-        })
+    async uploadObject(file: Express.Multer.File, fileName: string): Promise<string> {
+        let key = fileName ?? generateUniqueId({ length: 8 })
 
         const input: PutObjectCommandInput = {
             Body: file.buffer,
             Bucket: process.env.S3_BUCKET,
             Key: key,
             ContentType: file.mimetype,
-            ACL: 'public-read'
+            ACL: 'public-read-write'
         }
 
         try {
