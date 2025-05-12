@@ -2,8 +2,7 @@ import { PutObjectCommand, PutObjectCommandInput, PutObjectCommandOutput } from 
 import { Injectable } from '@nestjs/common';
 import { InjectS3, S3 } from 'nestjs-s3';
 import * as qrcode from 'qrcode';
-
-const generateUniqueId = require('generate-unique-id');
+import { randomUUID } from 'crypto';
 
 
 @Injectable()
@@ -17,15 +16,9 @@ export class ImageService {
             throw new Error(`Failed to generate qr-code. Reason: ${error.message}`)
         }
     }
-    
-    async getListObjects() {
-        return this.s3.listObjects({ Bucket: process.env.S3_BUCKET })
-    }
 
     async uploadObject(file: Express.Multer.File): Promise<string> {
-        let key = generateUniqueId({
-            length: 8
-        })
+        let key = randomUUID();
 
         const input: PutObjectCommandInput = {
             Body: file.buffer,
@@ -42,7 +35,6 @@ export class ImageService {
             if (response.$metadata.httpStatusCode === 200) {
                 return key
             }
-            throw new Error('Image not saved in s3!')
         }
         catch (err) {
             throw err

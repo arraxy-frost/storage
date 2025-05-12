@@ -4,8 +4,9 @@ import { ConfigModule } from '@nestjs/config'
 import { S3Module } from 'nestjs-s3'
 import { ImageModule } from './image/image.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { AnalyticsModule } from './analytics/analytics.module';
-import { Event } from './analytics/entity/event.entity'
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
     imports: [
@@ -17,9 +18,9 @@ import { Event } from './analytics/entity/event.entity'
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
         username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
+        password: process.env.DB_PASS,
         database: process.env.DB_NAME,
-        entities: [Event],
+        entities: [],
         synchronize: true,
       }),
       S3Module.forRoot({
@@ -33,7 +34,6 @@ import { Event } from './analytics/entity/event.entity'
           forcePathStyle: true,
         }
       }),
-      AnalyticsModule
     ],
 })
 export class AppModule {}
