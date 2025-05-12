@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { S3Module } from 'nestjs-s3'
 import { ImageModule } from './image/image.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { FilesModule } from './files/files.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -34,6 +35,7 @@ dotenv.config();
           forcePathStyle: true,
         }
       }),
+      FilesModule,
     ],
 })
 export class AppModule {}
