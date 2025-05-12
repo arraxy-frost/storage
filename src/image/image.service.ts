@@ -40,7 +40,6 @@ export class ImageService {
                 await this.s3.send(new PutObjectCommand(input))
 
             if (response.$metadata.httpStatusCode === 200) {
-                // return `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${key}`
                 return key
             }
             throw new Error('Image not saved in s3!')
