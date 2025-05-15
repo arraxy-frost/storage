@@ -1,7 +1,7 @@
 {
     "name": "storage",
     "version": "1.0.0",
-    "description": "s3 middleware and qr-code gen api",
+    "description": "File storage API",
     "author": "arraxy-frost",
     "private": true,
     "scripts": {
@@ -25,7 +25,7 @@
         "@nestjs/core": "^10.0.0",
         "@nestjs/passport": "^10.0.3",
         "@nestjs/platform-express": "^10.0.0",
-        "@nestjs/swagger": "^8.0.1",
+        "@nestjs/swagger": "^8.1.1",
         "@nestjs/typeorm": "^10.0.2",
         "class-validator": "^0.14.1",
         "generate-unique-id": "^2.0.3",
