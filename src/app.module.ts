@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common'
 import { AuthModule } from './auth/auth.module'
 import { ConfigModule } from '@nestjs/config'
 import { S3Module } from 'nestjs-s3'
-import { ImageModule } from './image/image.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { FilesModule } from './files/files.module';
+import { QrcodeModule } from './qrcode/qrcode.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,7 +13,6 @@ dotenv.config();
     imports: [
       ConfigModule.forRoot(),
       AuthModule,
-      ImageModule,
       TypeOrmModule.forRoot({
         type: 'mysql',
         host: process.env.DB_HOST,
@@ -36,6 +35,7 @@ dotenv.config();
         }
       }),
       FilesModule,
+      QrcodeModule,
     ],
 })
 export class AppModule {}

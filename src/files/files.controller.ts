@@ -3,8 +3,12 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { AuthGuard } from '@nestjs/passport'
 import { Express, Request } from 'express'
 import { FilesService } from './files.service'
+import * as process from 'node:process'
 
-@Controller('files')
+@Controller({
+    path: 'files',
+    version: '1'
+})
 export class FilesController {
     constructor(
         private readonly filesService: FilesService
@@ -15,6 +19,6 @@ export class FilesController {
     @UseGuards(AuthGuard('api-key'))
     async postImage(@Req() req: Request, @UploadedFile() file: Express.Multer.File) {
         let fileName = await this.filesService.uploadObject(file);
-        return `${req.protocol}://${req.get('Host')}${req.originalUrl}/qr/${fileName}`
+        return `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${fileName}`
     }
 }
