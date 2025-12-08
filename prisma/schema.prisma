@@ -1,0 +1,23 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model File {
+  id           String     @id @default(uuid())
+  prefix       String?
+  originalName String
+  extension    String
+  mimeType     String
+  size         Int
+  url          String
+  hash         String   @unique
+  uploadedAt   DateTime   @default(now())
+
+  @@map("files")
+}
