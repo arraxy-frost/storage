@@ -3,6 +3,7 @@ import { FilesModule } from './modules/files/files.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './shared/prisma.service';
+import s3Config from './config/s3.config';
 
 @Module({
     imports: [
@@ -11,6 +12,7 @@ import { PrismaService } from './shared/prisma.service';
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: '.env',
+            load: [s3Config],
         }),
     ],
     providers: [PrismaService],

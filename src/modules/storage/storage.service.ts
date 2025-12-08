@@ -14,14 +14,16 @@ export class StorageService {
     private readonly ENDPOINT: string;
 
     constructor(private readonly config: ConfigService) {
-        this.BUCKET_NAME = this.config.getOrThrow<string>('S3_BUCKET');
-        this.ENDPOINT = this.config.getOrThrow<string>('S3_ENDPOINT');
+        const s3Config = config.get('s3');
+
+        this.BUCKET_NAME = s3Config.bucket;
+        this.ENDPOINT = s3Config.endpoint;
 
         this.client = new S3Client({
-            region: this.config.getOrThrow<string>('S3_REGION'),
+            region: s3Config.region,
             credentials: {
-                accessKeyId: this.config.getOrThrow<string>('S3_ACCESS_KEY_ID'),
-                secretAccessKey: this.config.getOrThrow<string>('S3_SECRET'),
+                accessKeyId: s3Config.accessKeyId,
+                secretAccessKey: s3Config.secretAccessKey,
             },
             endpoint: this.ENDPOINT,
         });
