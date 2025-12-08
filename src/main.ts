@@ -25,7 +25,11 @@ async function bootstrap() {
 
     app.setGlobalPrefix('api/storage');
 
-    await app.register(multipart);
+    await app.register(multipart, {
+        limits: {
+            fileSize: 1024 * 1024 * 128, // 128Mb
+        },
+    });
 
     await app.listen(PORT);
     console.log('Server is running on port ' + PORT);

@@ -2,6 +2,7 @@ import {
     Injectable,
     InternalServerErrorException,
     Logger,
+    NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
 import { SearchFilesDto } from './files.dto';
@@ -82,7 +83,7 @@ export class FilesService {
             return existedFile;
         }
 
-        const key = uuidv4();
+        const id = uuidv4();
         const prefix = null;
         const originalName = file.filename;
         const mimeType = file.mimetype;
@@ -91,13 +92,14 @@ export class FilesService {
 
         try {
             const url = await this.storageService.uploadFile(
-                `${key}${extension}`,
+                `${id}${extension}`,
                 buffer,
                 mimeType,
             );
 
             return this.prisma.file.create({
                 data: {
+                    id,
                     prefix,
                     originalName,
                     extension,
@@ -110,6 +112,36 @@ export class FilesService {
         } catch (error: any) {
             this.logger.error('Error uploading file');
             throw new InternalServerErrorException(error.message);
+        }
+    }
+
+    async deleteFileById(id: string) {
+        const file = await this.prisma.file.findFirst({
+            where: {
+                id,
+            },
+        });
+
+        if (!file) {
+            this.logger.log('Error deleting file: not found', id);
+            throw new NotFoundException('File not found');
+        }
+
+        try {
+            const key = file.id + file.extension;
+
+            await this.storageService.deleteFile(key);
+
+            await this.prisma.file.delete({
+                where: {
+                    id: file.id,
+                },
+            });
+
+            return file;
+        } catch (e) {
+            this.logger.error('Error deleting file', file.id);
+            throw new InternalServerErrorException(e.message);
         }
     }
 }

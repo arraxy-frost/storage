@@ -1,7 +1,9 @@
 import {
     BadRequestException,
     Controller,
+    Delete,
     Get,
+    Param,
     Post,
     Query,
     Req,
@@ -35,5 +37,10 @@ export class FilesController {
         }
 
         return this.fileService.uploadFile(file);
+    }
+
+    @Delete(':fileId')
+    async deleteFileById(@Param('fileId') fileId: string) {
+        return this.fileService.deleteFileById(fileId);
     }
 }

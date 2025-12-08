@@ -41,7 +41,9 @@ export class StorageService {
     }
 
     async deleteFile(key: string) {
-        await this.client.send(
+        console.log(key);
+
+        return this.client.send(
             new DeleteObjectCommand({
                 Bucket: this.BUCKET_NAME,
                 Key: key,
