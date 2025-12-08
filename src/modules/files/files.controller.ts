@@ -1,12 +1,73 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+    BadRequestException,
+    Controller,
+    Get,
+    Logger,
+    Post,
+    Query,
+    Req,
+} from '@nestjs/common';
 import { FilesService } from './files.service';
+import type { FastifyRequest } from 'fastify';
+import { extname } from 'path';
+import { PrismaService } from '../../shared/prisma.service';
+import { createHash } from 'crypto';
+import { File } from '../../../generated/prisma/client';
+import { PaginatedRequestDto } from '../../common/dto/paginated-request.dto';
 
 @Controller('files')
 export class FilesController {
-    constructor(private readonly fileService: FilesService) {}
+    private readonly logger = new Logger(FilesService.name);
+
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly fileService: FilesService,
+    ) {}
 
     @Get()
-    async getFiles() {
-        return this.fileService.getFiles();
+    async getFiles(@Query() query: PaginatedRequestDto) {
+        return this.fileService.getFiles(query);
+    }
+
+    @Post()
+    async uploadFile(@Req() req: FastifyRequest): Promise<File> {
+        const file = await req.file();
+
+        if (!file) {
+            throw new BadRequestException('File not provided');
+        }
+
+        const buffer = await file.toBuffer();
+        const hash = createHash('sha256').update(buffer).digest('hex');
+
+        const existedFile = await this.prisma.file.findFirst({
+            where: {
+                hash,
+            },
+        });
+
+        if (existedFile) {
+            this.logger.log('Return existed file');
+            return existedFile;
+        }
+
+        const prefix = null;
+        const originalName = file.filename;
+        const mimeType = file.mimetype;
+        const size = buffer.length;
+        const extension = extname(originalName);
+        const url = `/uploads/${prefix}/${originalName}`;
+
+        return this.prisma.file.create({
+            data: {
+                prefix,
+                originalName,
+                extension,
+                mimeType,
+                size,
+                url,
+                hash,
+            },
+        });
     }
 }
