@@ -13,7 +13,7 @@ import { extname } from 'path';
 import { PrismaService } from '../../shared/prisma.service';
 import { createHash } from 'crypto';
 import { File } from '../../../generated/prisma/client';
-import { PaginatedRequestDto } from '../../common/dto/paginated-request.dto';
+import { SearchFilesDto } from './files.dto';
 
 @Controller('files')
 export class FilesController {
@@ -25,7 +25,7 @@ export class FilesController {
     ) {}
 
     @Get()
-    async getFiles(@Query() query: PaginatedRequestDto) {
+    async getFiles(@Query() query: SearchFilesDto) {
         return this.fileService.getFiles(query);
     }
 
