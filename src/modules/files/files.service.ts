@@ -31,7 +31,6 @@ export class FilesService {
         if (query.name?.trim()) {
             where.originalName = {
                 contains: query.name?.trim(),
-                mode: 'insensitive',
             };
         }
 
@@ -42,7 +41,6 @@ export class FilesService {
         if (query.mimeType?.trim()) {
             where.mimeType = {
                 startsWith: query.mimeType?.trim(),
-                mode: 'insensitive',
             };
         }
 

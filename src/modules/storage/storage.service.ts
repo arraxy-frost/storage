@@ -43,8 +43,6 @@ export class StorageService {
     }
 
     async deleteFile(key: string) {
-        console.log(key);
-
         return this.client.send(
             new DeleteObjectCommand({
                 Bucket: this.BUCKET_NAME,
