@@ -1,5 +1,6 @@
 import {
     BadRequestException,
+    Body,
     Controller,
     Delete,
     Get,
@@ -12,7 +13,7 @@ import { FilesService } from './files.service';
 import type { FastifyRequest } from 'fastify';
 import { PrismaService } from '../../shared/prisma.service';
 import { File } from '../../../generated/prisma/client';
-import { SearchFilesDto } from './files.dto';
+import { GetFilesDataById, SearchFilesDto } from './files.dto';
 import { MultipartFile } from '@fastify/multipart';
 
 @Controller('files')
@@ -37,6 +38,11 @@ export class FilesController {
         }
 
         return this.fileService.uploadFile(file);
+    }
+
+    @Post('search')
+    async getFilesDataById(@Body() body: GetFilesDataById) {
+        return this.fileService.getFilesByIds(body);
     }
 
     @Delete(':fileId')

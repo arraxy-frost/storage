@@ -1,5 +1,5 @@
 import { PaginatedRequestDto } from '../../common/dto/paginated-request.dto';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class SearchFilesDto extends PaginatedRequestDto {
     @IsOptional()
@@ -21,4 +21,9 @@ export class SearchFilesDto extends PaginatedRequestDto {
     @IsNotEmpty()
     @IsString()
     url: string;
+}
+
+export class GetFilesDataById {
+    @IsArray()
+    ids: string[];
 }

@@ -1,11 +1,6 @@
-import {
-    Injectable,
-    InternalServerErrorException,
-    Logger,
-    NotFoundException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException, } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
-import { SearchFilesDto } from './files.dto';
+import { GetFilesDataById, SearchFilesDto } from './files.dto';
 import { FileWhereInput } from '../../../generated/prisma/models/File';
 import { StorageService } from '../storage/storage.service';
 import { MultipartFile } from '@fastify/multipart';
@@ -64,6 +59,16 @@ export class FilesService {
             totalPage: Math.ceil(total / limit),
             items,
         };
+    }
+
+    async getFilesByIds(query: GetFilesDataById) {
+        return this.prisma.file.findMany({
+            where: {
+                id: {
+                    in: query.ids
+                }
+            }
+        })
     }
 
     async uploadFile(file: MultipartFile) {
