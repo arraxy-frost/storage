@@ -9,34 +9,34 @@ datasource db {
 }
 
 model File {
-  id           String     @id @default(uuid())
+  id           String   @id @default(uuid())
   prefix       String?
   originalName String
   extension    String
   mimeType     String
   size         Int
   url          String
-  hash         String      @unique
-  uploadedAt   DateTime    @default(now())
+  hash         String   @unique
+  uploadedAt   DateTime @default(now())
 
   // ссылка на директорию
-  directoryId  String?
-  directory    Directory?  @relation(fields: [directoryId], references: [id])
+  directoryId String?
+  directory   Directory? @relation(fields: [directoryId], references: [id])
 
   @@map("files")
 }
 
 model Directory {
-  id        String      @id @default(uuid())
-  name      String
+  id   String @id @default(uuid())
+  name String
 
   // self-relation: родительская директория
-  parentId  String?
-  parent    Directory?  @relation("DirectoryToSubdirectories", fields: [parentId], references: [id])
-  children  Directory[] @relation("DirectoryToSubdirectories")
+  parentId String?
+  parent   Directory?  @relation("DirectoryToSubdirectories", fields: [parentId], references: [id], onDelete: SetNull)
+  children Directory[] @relation("DirectoryToSubdirectories")
 
   // файлы внутри директории
-  files     File[]
+  files File[]
 
   @@map("directories")
 }

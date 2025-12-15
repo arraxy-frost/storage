@@ -13,12 +13,15 @@ import { FilesService } from './files.service';
 import type { FastifyRequest } from 'fastify';
 import { PrismaService } from '../../shared/prisma.service';
 import { File } from '../../../generated/prisma/client';
-import { GetFilesDataById, SearchFilesDto } from './files.dto';
+import {
+    GetFilesDataById,
+    SearchFilesDto,
+    UploadOptionsDto,
+} from './files.dto';
 import { MultipartFile } from '@fastify/multipart';
 
 @Controller('files')
 export class FilesController {
-
     constructor(
         private readonly prisma: PrismaService,
         private readonly fileService: FilesService,
@@ -30,7 +33,10 @@ export class FilesController {
     }
 
     @Post()
-    async uploadFile(@Req() req: FastifyRequest): Promise<File> {
+    async uploadFile(
+        @Req() req: FastifyRequest,
+        @Body() options: UploadOptionsDto,
+    ): Promise<File> {
         const file: MultipartFile | undefined = await req.file();
 
         if (!file) {

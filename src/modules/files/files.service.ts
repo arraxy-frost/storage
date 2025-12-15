@@ -43,6 +43,10 @@ export class FilesService {
             where.url = query.url;
         }
 
+        if (query.directoryId) {
+            where.directoryId = query.directoryId;
+        }
+
         const [items, total] = await Promise.all([
             this.prisma.file.findMany({
                 where,
