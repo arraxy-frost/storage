@@ -56,6 +56,10 @@ export class FilesController {
             throw new BadRequestException('File not provided');
         }
 
+        if (!file.mimetype.startsWith('image/')) {
+            throw new BadRequestException('File type not allowed');
+        }
+
         return this.fileService.uploadFile(file);
     }
 

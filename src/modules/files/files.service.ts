@@ -7,6 +7,7 @@ import { MultipartFile } from '@fastify/multipart';
 import { createHash } from 'crypto';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import sharp from 'sharp';
 
 @Injectable()
 export class FilesService {
@@ -16,6 +17,65 @@ export class FilesService {
         private readonly prisma: PrismaService,
         private readonly storageService: StorageService,
     ) {}
+
+    private async compressImage(inputBuffer: Buffer) {
+        return sharp(inputBuffer)
+            .resize({ width: 1200, withoutEnlargement: true })
+            .jpeg({ quality: 90 })
+            .toBuffer();
+    }
+
+    async uploadFile(file: MultipartFile) {
+        let buffer = await file.toBuffer();
+        const hash = createHash('sha256').update(buffer).digest('hex');
+
+        const existedFile = await this.prisma.file.findFirst({
+            where: {
+                hash,
+            },
+        });
+
+        if (existedFile) {
+            this.logger.log('Return existed file');
+            return existedFile;
+        }
+
+        const id = uuidv4();
+        const prefix = null;
+        const originalName = file.filename;
+        const mimeType = file.mimetype;
+        const extension = extname(originalName);
+
+        if (mimeType.startsWith('image/')) {
+            buffer = await this.compressImage(buffer);
+        }
+
+        const size = buffer.length;
+
+        try {
+            const url = await this.storageService.uploadFile(
+                `${id}${extension}`,
+                buffer,
+                mimeType,
+            );
+
+            return this.prisma.file.create({
+                data: {
+                    id,
+                    prefix,
+                    originalName,
+                    extension,
+                    mimeType,
+                    size,
+                    url,
+                    hash,
+                },
+            });
+        } catch (error: any) {
+            this.logger.error('Error uploading file');
+            throw new InternalServerErrorException(error.message);
+        }
+    }
 
     async getFiles(query: SearchFilesDto) {
         const limit = Number(query.limit ?? 10);
@@ -73,53 +133,6 @@ export class FilesService {
                 }
             }
         })
-    }
-
-    async uploadFile(file: MultipartFile) {
-        const buffer = await file.toBuffer();
-        const hash = createHash('sha256').update(buffer).digest('hex');
-
-        const existedFile = await this.prisma.file.findFirst({
-            where: {
-                hash,
-            },
-        });
-
-        if (existedFile) {
-            this.logger.log('Return existed file');
-            return existedFile;
-        }
-
-        const id = uuidv4();
-        const prefix = null;
-        const originalName = file.filename;
-        const mimeType = file.mimetype;
-        const size = buffer.length;
-        const extension = extname(originalName);
-
-        try {
-            const url = await this.storageService.uploadFile(
-                `${id}${extension}`,
-                buffer,
-                mimeType,
-            );
-
-            return this.prisma.file.create({
-                data: {
-                    id,
-                    prefix,
-                    originalName,
-                    extension,
-                    mimeType,
-                    size,
-                    url,
-                    hash,
-                },
-            });
-        } catch (error: any) {
-            this.logger.error('Error uploading file');
-            throw new InternalServerErrorException(error.message);
-        }
     }
 
     async deleteFileById(id: string) {
