@@ -39,15 +39,23 @@ export class StorageService {
             }),
         );
 
-        return `${this.ENDPOINT}/${this.BUCKET_NAME}/${key}`;
+        const fileUrl = `${this.ENDPOINT}/${this.BUCKET_NAME}/${key}`;
+
+        this.logger.log(`Uploaded file: ${fileUrl}`);
+
+        return fileUrl;
     }
 
     async deleteFile(key: string) {
-        return this.client.send(
+        const deletionResult = this.client.send(
             new DeleteObjectCommand({
                 Bucket: this.BUCKET_NAME,
                 Key: key,
             }),
         );
+
+        this.logger.log(`Deleted file: ${key}`);
+
+        return deletionResult;
     }
 }
