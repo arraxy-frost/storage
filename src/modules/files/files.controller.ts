@@ -46,7 +46,7 @@ export class FilesController {
         return this.fileService.uploadFile(file);
     }
 
-    @Post()
+    @Post('image')
     async uploadImage(
         @Req() req: FastifyRequest,
     ): Promise<File> {
