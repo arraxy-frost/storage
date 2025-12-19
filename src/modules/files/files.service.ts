@@ -20,8 +20,8 @@ export class FilesService {
 
     private async compressImage(inputBuffer: Buffer) {
         return sharp(inputBuffer)
-            .resize({ width: 1200, withoutEnlargement: true })
-            .jpeg({ quality: 90 })
+            .resize({ width: 1920, withoutEnlargement: true })
+            .jpeg()
             .toBuffer();
     }
 
