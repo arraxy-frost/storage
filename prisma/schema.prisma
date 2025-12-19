@@ -16,7 +16,7 @@ model File {
   mimeType     String
   size         Int
   url          String
-  hash         String   @unique
+  hash         String?  @unique
   uploadedAt   DateTime @default(now())
 
   // ссылка на директорию

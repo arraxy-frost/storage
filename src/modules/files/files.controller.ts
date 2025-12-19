@@ -63,6 +63,19 @@ export class FilesController {
         return this.fileService.uploadFile(file);
     }
 
+    @Post('video')
+    async uploadVideo(
+        @Req() req: FastifyRequest,
+    ) {
+        const file: MultipartFile | undefined = await req.file();
+
+        if (!file) {
+            throw new BadRequestException('File not provided');
+        }
+
+        return this.fileService.uploadVideo(file);
+    }
+
     @Post('search')
     async getFilesDataById(@Body() body: GetFilesDataById) {
         return this.fileService.getFilesByIds(body);

@@ -1,4 +1,10 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException, } from '@nestjs/common';
+import {
+    Injectable,
+    InternalServerErrorException,
+    Logger,
+    NotFoundException,
+    UnsupportedMediaTypeException,
+} from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
 import { GetFilesDataById, SearchFilesDto } from './files.dto';
 import { FileWhereInput } from '../../../generated/prisma/models/File';
@@ -8,6 +14,7 @@ import { createHash } from 'crypto';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
+import { PassThrough } from 'node:stream';
 
 @Injectable()
 export class FilesService {
@@ -77,6 +84,57 @@ export class FilesService {
         }
     }
 
+    async uploadVideo(file: MultipartFile) {
+        if (!file.mimetype.startsWith('video/')) {
+            throw new UnsupportedMediaTypeException('Unsupported media type');
+        }
+
+        try {
+            const id = uuidv4();
+            const extension = extname(file.filename);
+            const key = `${id}${extension}`;
+
+            const passThrough = new PassThrough();
+            let size = 0;
+
+            file.file.on('data', (chunk: Buffer) => {
+                size += chunk.length;
+            })
+
+            file.file.on('error', (err) => {
+                passThrough.destroy(err);
+            });
+
+            passThrough.on('error', (err) => {
+                this.logger.error('Stream error', err);
+            });
+
+            file.file.pipe(passThrough);
+
+            const url = await this.storageService.uploadStream(
+                key,
+                passThrough,
+                file.mimetype,
+            );
+
+            return this.prisma.file.create({
+                data: {
+                    id,
+                    prefix: null,
+                    originalName: file.filename,
+                    extension,
+                    mimeType: file.mimetype,
+                    size,
+                    url,
+                    hash: id,
+                },
+            });
+        } catch (error: any) {
+            this.logger.error('Error uploading file');
+            throw new InternalServerErrorException(error.message);
+        }
+    }
+
     async getFiles(query: SearchFilesDto) {
         const limit = Number(query.limit ?? 10);
         const page = Number(query.page ?? 1);
@@ -129,10 +187,10 @@ export class FilesService {
         return this.prisma.file.findMany({
             where: {
                 id: {
-                    in: query.ids
-                }
-            }
-        })
+                    in: query.ids,
+                },
+            },
+        });
     }
 
     async deleteFileById(id: string) {

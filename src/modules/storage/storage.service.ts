@@ -4,7 +4,9 @@ import {
     PutObjectCommand,
     S3Client,
 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { ConfigService } from '@nestjs/config';
+import { Readable } from 'stream';
 
 @Injectable()
 export class StorageService {
@@ -44,6 +46,30 @@ export class StorageService {
         this.logger.log(`Uploaded file: ${fileUrl}`);
 
         return fileUrl;
+    }
+
+    async uploadStream(
+        key: string,
+        stream: Readable,
+        contentType: string,
+    ): Promise<string> {
+        const upload = new Upload({
+            client: this.client,
+            params: {
+                Bucket: this.BUCKET_NAME,
+                Key: key,
+                Body: stream,
+                ContentType: contentType,
+                // ⛔ НЕ ContentLength
+            },
+            queueSize: 4,
+            partSize: 10 * 1024 * 1024, // 10 MB
+            leavePartsOnError: false,
+        });
+
+        await upload.done();
+
+        return `${this.ENDPOINT}/${this.BUCKET_NAME}/${key}`;
     }
 
     async deleteFile(key: string) {
