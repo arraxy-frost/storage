@@ -1,5 +1,6 @@
 import { PaginatedRequestDto } from '../../common/dto/paginated-request.dto';
 import {
+    ArrayNotEmpty,
     IsArray,
     IsBoolean,
     IsNotEmpty,
@@ -36,6 +37,8 @@ export class SearchFilesDto extends PaginatedRequestDto {
 
 export class GetFilesDataById {
     @IsArray()
+    @ArrayNotEmpty()
+    @IsString({ each: true })
     ids: string[];
 }
 
