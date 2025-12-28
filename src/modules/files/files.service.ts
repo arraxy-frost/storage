@@ -54,7 +54,13 @@ export class FilesService {
         const extension = extname(originalName);
 
         if (mimeType.startsWith('image/')) {
-            buffer = await this.compressImage(buffer);
+            try {
+                buffer = await this.compressImage(buffer);
+            } catch (error) {
+                this.logger.error(
+                    `${originalName}: Error while compressing image - ${error.message}`,
+                );
+            }
         }
 
         const size = buffer.length;
@@ -99,7 +105,7 @@ export class FilesService {
 
             file.file.on('data', (chunk: Buffer) => {
                 size += chunk.length;
-            })
+            });
 
             file.file.on('error', (err) => {
                 passThrough.destroy(err);
