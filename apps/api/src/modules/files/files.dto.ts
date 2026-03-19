@@ -1,4 +1,4 @@
-import { PaginatedRequestDto } from '../../common/dto/paginated-request.dto';
+import { PaginatedRequestDto } from '../../shared/dto/paginated-request.dto';
 import {
     ArrayNotEmpty,
     IsArray,

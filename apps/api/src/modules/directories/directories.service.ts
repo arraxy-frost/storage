@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma.service';
 import { CreateDirectoryDto } from './directories.dto';
-import { PaginatedRequestDto } from '../../common/dto/paginated-request.dto';
+import { PaginatedRequestDto } from '../../shared/dto/paginated-request.dto';
 
 @Injectable()
 export class DirectoriesService {
