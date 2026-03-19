@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import multipart from '@fastify/multipart';
 import { ConsoleLogger } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 dotenv.config();
 
@@ -25,6 +26,16 @@ async function bootstrap() {
 
     app.setGlobalPrefix('api/storage');
 
+    // Swagger setup
+    const config = new DocumentBuilder()
+        .setTitle('Storage API')
+        .setDescription('The Storage API description')
+        .setVersion('1.0')
+        .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+
+    // Multipart setup
     await app.register(multipart, {
         limits: {
             fileSize: 1024 * 1024 * 128, // 128Mb
