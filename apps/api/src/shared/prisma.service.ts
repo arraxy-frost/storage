@@ -11,9 +11,8 @@ export class PrismaService extends PrismaClient {
             user: config.getOrThrow('DB_USER'),
             password: config.getOrThrow('DB_PASS'),
             database: config.getOrThrow('DB_NAME'),
-            connectionLimit: 5
+            connectionLimit: 5,
         });
         super({ adapter });
-
     }
 }

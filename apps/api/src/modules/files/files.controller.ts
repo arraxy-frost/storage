@@ -47,9 +47,7 @@ export class FilesController {
     }
 
     @Post('image')
-    async uploadImage(
-        @Req() req: FastifyRequest,
-    ): Promise<File> {
+    async uploadImage(@Req() req: FastifyRequest): Promise<File> {
         const file: MultipartFile | undefined = await req.file();
 
         if (!file) {
@@ -64,9 +62,7 @@ export class FilesController {
     }
 
     @Post('video')
-    async uploadVideo(
-        @Req() req: FastifyRequest,
-    ) {
+    async uploadVideo(@Req() req: FastifyRequest) {
         const file: MultipartFile | undefined = await req.file();
 
         if (!file) {

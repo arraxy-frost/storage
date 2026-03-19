@@ -24,7 +24,7 @@ async function bootstrap() {
         },
     );
 
-    app.setGlobalPrefix('api/storage');
+    app.setGlobalPrefix('api');
 
     // Swagger setup
     const config = new DocumentBuilder()
